@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Ciencias Sociales"
+  },
+  {
+    "id": 2,
+    "name": "Ciencias Naturales"
+  },
+  {
+    "id": 3,
+    "name": "Ciencias Exactas"
+  },
+  {
+    "id": 4,
+    "name": "Ciencias de Computación e Información"
+  },
+  {
+    "id": 5,
+    "name": "Ciencias de la Salud"
+  },
+  {
+    "id": 6,
+    "name": "Ciencias de Educación"
+  },
+  {
+    "id": 7,
+    "name": "Ciencia Política"
+  },
+  {
+    "id": 8,
+    "name": "Ciencias Fisicas"
+  },
+  {
+    "id": 9,
+    "name": "Ciencias Químicas"
+  }
+]
