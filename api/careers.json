@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Matematicas",
+    "duration": "4 años",
+    "category": "Ciencias Exactas"
+  },
+  {
+    "id": 2,
+    "name": "Derecho",
+    "duration": "4 años",
+    "category": "Ciencia Política"
+  },
+  {
+    "id": 3,
+    "name": "Profesorado en Historia",
+    "duration": "4 años",
+    "category": "Ciencias de Educación"
+  },
+  {
+    "id": 4,
+    "name": "Profesorado en Educación Física",
+    "duration": "4 años",
+    "category": "Ciencias de Educación"
+  },
+  {
+    "id": 5,
+    "name": "Tecnicatura en Ciencia de Datos e IA",
+    "duration": "4 años",
+    "category": "Ciencias de Computación e Información"
+  },
+  {
+    "id": 6,
+    "name": "Maestra Inicial",
+    "duration": "4 años",
+    "category": "Ciencias de Educación"
+  }
+]
