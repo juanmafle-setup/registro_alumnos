@@ -1,15 +1,26 @@
+// ---------------------------------------------
+// app.js - Lógica principal del sistema de gestión de alumnos, carreras y categorías
+// ---------------------------------------------
+// Este archivo contiene:
+// - Servicios para interactuar con la API REST (GET, POST, DELETE)
+// - Funciones intermedias que gestionan la lógica de validación y actualización de la interfaz
+// - Inicialización de selects y listeners de eventos para los formularios de la interfaz
+// ---------------------------------------------
+
+// --- CONFIGURACIÓN DE ENDPOINTS Y HEADERS ---
+// Definición de las URLs de la API y la clave de autenticación.
+
 const API_URL = "http://localhost:5001/api/students";
 const CAREERS_API_URL = "http://localhost:5001/api/careers";
 const CATEGORIES_API_URL = "http://localhost:5001/api/categories";
-
 const API_KEY = "12345ABCDEF";
-
 const headers = {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${API_KEY}`
 };
 
-// --- ESTUDIANTES ---
+// --- SERVICIOS DE ESTUDIANTES ---
+// Funciones que interactúan directamente con la API para gestionar estudiantes.
 
 async function registerStudentService(name, career) {
     //realiza una peticion post a la api enviandole el nombre y carrera del estudiante, ingresados en index.html, como el cuerpo de la peticion para poder registrarlo en la base de datos o archivo .json
@@ -485,6 +496,32 @@ async function loadCategoriesForDelete() {
     }
 }
 
+async function showAllCategories() {
+    const resultContainer = document.getElementById('allCategoriesList');
+    try {
+        const categories = await getAllCategoriesService();
+        if (!categories || categories.length === 0) {
+            resultContainer.innerHTML = '<div class="alert alert-info">No hay categorías registradas</div>';
+            return;
+        }
+        let htmlContent = '';
+        for (const category of categories) {
+            htmlContent += `
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <strong>ID:</strong> ${category.id} <br>
+                        <strong>Nombre:</strong> ${category.name}
+                    </div>
+                </div>
+            `;
+        }
+        resultContainer.innerHTML = htmlContent;
+    } catch (error) {
+        resultContainer.innerHTML = `<div class="alert alert-danger">Error al cargar categorías: ${error.message}</div>`;
+        console.error(error);
+    }
+}
+
 async function deleteCategory() {
     //funcion intermedia que se encarga de recoger el ID de la categoria seleccionada en el formulario de eliminacion, valida el ID y llama a deleteCategoryService para eliminar la categoria desde la api, luego muestra el resultado en la interfaz del usuario
     const select = document.getElementById('deleteCategorySelect');
@@ -554,10 +591,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Para categorias.html
     if (typeof loadCategoriesForDelete === "function") loadCategoriesForDelete();
     // Carga las categorias guardadas en el archivo .json, que fueron registradas en categorias.html y las disponibiliza en el select de categorias del formulario de eliminacion de categorias en categorias.html
+    
+    const addCategoryBtn = document.getElementById('addCategoryBtn');
+    if (addCategoryBtn) addCategoryBtn.addEventListener('click', addCategory);
+
+    const deleteCategoryBtn = document.getElementById('deleteCategoryBtn');
+    if (deleteCategoryBtn) deleteCategoryBtn.addEventListener('click', deleteCategory);
+
+    const searchCategoryByIdBtn = document.getElementById('searchCategoryByIdBtn');
+    if (searchCategoryByIdBtn) searchCategoryByIdBtn.addEventListener('click', searchCategoryById);
+    //estos tres listeners se encargan de hacer funcionales los botones de agregar, eliminar y buscar por ID categoria en categorias.html
+
+    const showAllCategoriesBtn = document.getElementById('showAllCategoriesBtn');
+    if (showAllCategoriesBtn) showAllCategoriesBtn.addEventListener('click', showAllCategories);
+    // Este listener se encarga de hacer funcional el botón de mostrar todas las categorías en categorias.html
+
+    
+
 });
 
 // --- FLUJO DE EVENTOS ---
 
-// el flujo de eventos se encarga de recoger los eventos o datos ingresados por el usuario en los formularios de index.html, carreras.html y categorias.html, y llama a las funciones intermedias correspondientes para realizar las acciones deseadas (registro, busqueda, eliminacion, etc.) en app.js
+// el flujo de eventos se encarga de recoger los eventos o datos ingresados por el usuario en los formularios de index.html, carreras.html y categorias.html,cuando el usuario presiona un boton, se ejecuta la funcion correspondiente al evento que esta definifa en cada uno de los html para luego comunicarse con app.js, y llama a las funciones intermedias correspondientes para realizar las acciones deseadas (registro, busqueda, eliminacion, etc.) en app.js
 // las funciones intermedias luego llaman a los servicios correspondientes para interactuar con la API y obtener, ingresar, eliminar o editar los datos en la base de datos o archivo .json
 // por ultimo la api devuelve los resultados actualizaddos o los errores correspondientes a las acciones realizadas por el usuario y las funciones intermedias muestran los resultados en la interfaz del usuario, osea en el index.html, carreras.html o categorias.html.

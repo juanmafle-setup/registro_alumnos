@@ -35,7 +35,7 @@
         <h2 class="text-success">➕ Añadir nueva categoría</h2>
         <div class="input-group mb-2">
             <input type="text" id="newCategory" class="form-control" placeholder="Nombre de la categoría">
-            <button class="btn btn-primary" onclick="addCategory()">Añadir</button>
+            <button class="btn btn-primary" id="addCategoryBtn">Añadir</button>
         </div>
         <div id="addCategoryMsg"></div>
     </section>
@@ -44,126 +44,28 @@
     <section class="section-card mb-4">
         <h2 class="text-danger">❌ Eliminar categoría</h2>
         <select id="deleteCategorySelect" class="form-control mb-2"></select>
-        <button class="btn btn-danger" onclick="deleteCategory()">Eliminar Categoría</button>
+        <button class="btn btn-danger" id="deleteCategoryBtn">Eliminar Categoría</button>
         <div id="deleteCategoryResult" class="mt-2"></div>
     </section>
 
     <section class="section-card mb-4">
         <h2 class="text-info">🔎 Buscar categoría por ID</h2>
         <div class="input-group mb-2">
-        <input type="number" id="categoryIdSearch" class="form-control" placeholder="ID de la categoría">
-        <button class="btn btn-info" onclick="searchCategoryById()">Buscar</button>
+            <input type="number" id="categoryIdSearch" class="form-control" placeholder="ID de la categoría">
+            <button class="btn btn-info" id="searchCategoryByIdBtn">Buscar</button>
         </div>
         <div id="categorySearchResult"></div>
     </section>
 
     <!-- Ver todas las categorías -->
     <section class="section-card mb-4">
-        <h2 class="text-primary">📋 Todas las categorías registradas</h2>
-        <div id="allCategoriesList"></div>
-    </section>
+    <h2 class="text-primary">📋 Todas las categorías registradas</h2>
+    <button class="btn btn-info mb-3" id="showAllCategoriesBtn">Mostrar Todas</button>
+    <div id="allCategoriesList"></div>
+</section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="app.js"></script>
-<script>
-    // Mostrar todas las categorías
-    async function showAllCategories() {
-        try {
-            const categories = await getAllCategoriesService();
-            const container = document.getElementById("allCategoriesList");
-            if (!categories || categories.length === 0) {
-                container.innerHTML = '<div class="alert alert-info">No hay categorías registradas.</div>';
-                return;
-            }
-            let html = '<ul class="list-group">';
-            categories.forEach(cat => {
-                html += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>${cat.name}</span>
-                            <span class="badge bg-primary rounded-pill">ID: ${cat.id}</span>
-                         </li>`;
-            });
-            html += '</ul>';
-            container.innerHTML = html;
-        } catch (error) {
-            document.getElementById("allCategoriesList").innerHTML = '<div class="alert alert-danger">Error al cargar categorías.</div>';
-            console.error("Error al mostrar categorías:", error);
-        }
-    }
-
-    // Cargar categorías para eliminar y mostrar lista
-    async function loadCategoriesForDelete() {
-        const select = document.getElementById('deleteCategorySelect');
-        if (select) {
-            try {
-                const categories = await getAllCategoriesService();
-                select.innerHTML = '<option value="">Seleccione una categoría</option>';
-                categories.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category.id;
-                    option.textContent = category.name;
-                    select.appendChild(option);
-                });
-                showAllCategories();
-            } catch (error) {
-                console.error('Error al cargar categorías para eliminar:', error);
-            }
-        }
-    }
-
-    // Añadir categoría
-    async function addCategory() {
-        const name = document.getElementById("newCategory").value.trim();
-        const msg = document.getElementById("addCategoryMsg");
-
-        if (!name) {
-            msg.innerHTML = '<div class="alert alert-danger">Debes ingresar un nombre de categoría.</div>';
-            return;
-        }
-
-        try {
-            const result = await registerCategoryService(name);
-            if (result.error) {
-                msg.innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
-            } else {
-                msg.innerHTML = '<div class="alert alert-success">Categoría añadida exitosamente.</div>';
-                document.getElementById("newCategory").value = "";
-                await loadCategoriesForDelete();
-            }
-        } catch (error) {
-            msg.innerHTML = '<div class="alert alert-danger">Error al añadir categoría.</div>';
-            console.error("Error al añadir categoría:", error);
-        }
-    }
-
-    // Eliminar categoría
-    async function deleteCategory() {
-        const select = document.getElementById('deleteCategorySelect');
-        const msg = document.getElementById('deleteCategoryResult');
-        const id = select ? select.value : null;
-        if (!id) {
-            msg.innerHTML = '<div class="alert alert-danger">Seleccione una categoría para eliminar.</div>';
-            return;
-        }
-        try {
-            const result = await deleteCategoryService(id);
-            if (result.error) {
-                msg.innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
-            } else {
-                msg.innerHTML = '<div class="alert alert-success">Categoría eliminada exitosamente.</div>';
-                await loadCategoriesForDelete();
-            }
-        } catch (error) {
-            msg.innerHTML = '<div class="alert alert-danger">Error al eliminar categoría.</div>';
-            console.error("Error al eliminar categoría:", error);
-        }
-    }
-
-    // Inicialización
-    document.addEventListener('DOMContentLoaded', () => {
-        loadCategoriesForDelete();
-        showAllCategories(); // <-- Esta línea asegura que siempre se muestre la lista
-    });
-</script>
 </body>
 </html>
